@@ -1,0 +1,52 @@
+[project]
+name = "cardvault"
+version = "0.1.0"
+description = "Personal sports card collection tracker"
+readme = "README.md"
+authors = [
+    { name = "Justin Smith", email = "justinrsmith88@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+    "sqlmodel>=0.0.22",
+    "pydantic-settings>=2.0.0",
+    "jinja2>=3.1.0",
+    "apscheduler>=3.10.0",
+    "playwright>=1.40.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+cardvault = "cardvault:main"
+
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "httpx>=0.27.0",
+    "anyio>=4.0.0",
+    "ruff>=0.9.0",
+    "mypy>=1.14.0",
+]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008"]  # B008: FastAPI's Depends/Form in defaults is intentional
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

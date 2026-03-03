@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section id="add-form">
+  <details>
+    <summary>Add a card</summary>
+    <form
+      hx-post="/cards"
+      hx-target="#card-body"
+      hx-swap="afterbegin"
+      hx-on:htmx:after-request="this.reset()"
+    >
+      <div class="grid">
+        <label>
+          Player name
+          <input type="text" name="player_name" placeholder="Mickey Mantle" required />
+        </label>
+        <label>
+          Year
+          <input type="number" name="year" placeholder="1989" min="1800" max="2100" required />
+        </label>
+        <label>
+          Brand
+          <input type="text" name="brand" placeholder="Upper Deck" required />
+        </label>
+        <label>
+          Card #
+          <input type="text" name="card_number" placeholder="1" required />
+        </label>
+      </div>
+      <div class="grid">
+        <label>
+          Variation <small>(optional)</small>
+          <input type="text" name="variation" placeholder="Rookie, PSA 9, etc." />
+        </label>
+        <label>
+          Notes <small>(optional)</small>
+          <input type="text" name="notes" placeholder="Bought at show, etc." />
+        </label>
+      </div>
+      <button type="submit">Add card</button>
+    </form>
+  </details>
+</section>
+
+<section>
+  <div class="grid" style="align-items: center; margin-bottom: 1rem;">
+    <h2 style="margin: 0;">Collection</h2>
+    <input
+      type="search"
+      placeholder="Search cards..."
+      hx-get="/cards/search"
+      hx-trigger="input changed delay:300ms, search"
+      hx-target="#card-body"
+      hx-swap="innerHTML"
+      name="q"
+      style="max-width: 300px; justify-self: end;"
+    />
+  </div>
+
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Year</th>
+          <th>Brand</th>
+          <th>Card #</th>
+          <th>Variation</th>
+          <th>Est. Value</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="card-body">
+        {% include "partials/card_list.html" %}
+      </tbody>
+    </table>
+  </figure>
+</section>
+
+{% endblock %}

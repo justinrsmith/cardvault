@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}CardVault{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+  <style>
+    nav h1 { margin: 0; font-size: 1.5rem; }
+    .estimated-value { font-weight: bold; color: var(--pico-color-green-550); }
+    .no-cards { color: var(--pico-color-zinc-500); text-align: center; padding: 2rem; }
+    #add-form details { margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <nav>
+      <ul><li><h1>&#127183; CardVault</h1></li></ul>
+    </nav>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

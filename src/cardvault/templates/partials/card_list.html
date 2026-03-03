@@ -1,0 +1,7 @@
+{% for card in cards %}
+  {% include "partials/card_row.html" %}
+{% else %}
+  <tr>
+    <td colspan="7" class="no-cards">No cards yet — add one above.</td>
+  </tr>
+{% endfor %}
