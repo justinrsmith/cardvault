@@ -3,8 +3,8 @@
 from fastapi.testclient import TestClient
 
 GRIFFEY = {
-    "player_name": "Ken Griffey Jr.",
     "year": "1989",
+    "player_name": "Ken Griffey Jr.",
     "brand": "Upper Deck",
     "set": "Base Set",
     "card_number": "1",
@@ -12,8 +12,8 @@ GRIFFEY = {
 }
 
 TROUT = {
-    "player_name": "Mike Trout",
     "year": "2011",
+    "player_name": "Mike Trout",
     "brand": "Topps",
     "set": "Update Series",
     "card_number": "175",
@@ -61,6 +61,13 @@ def test_create_card_without_variation(client: TestClient) -> None:
     resp = client.post("/cards", data=TROUT)
     assert resp.status_code == 200
     assert "Mike Trout" in resp.text
+
+
+def test_create_card_without_card_number(client: TestClient) -> None:
+    data = {k: v for k, v in GRIFFEY.items() if k != "card_number"}
+    resp = client.post("/cards", data=data)
+    assert resp.status_code == 200
+    assert "Ken Griffey Jr." in resp.text
 
 
 def test_create_card_missing_required_field(client: TestClient) -> None:

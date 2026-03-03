@@ -13,12 +13,12 @@
     >
       <div class="grid">
         <label>
-          Player name
-          <input type="text" name="player_name" placeholder="Mickey Mantle" required />
-        </label>
-        <label>
           Year
           <input type="number" name="year" placeholder="1989" min="1800" max="2100" required />
+        </label>
+        <label>
+          Player name
+          <input type="text" name="player_name" placeholder="Mickey Mantle" required />
         </label>
         <label>
           Brand
@@ -28,15 +28,15 @@
           Set
           <input type="text" name="set" placeholder="Base Set" required />
         </label>
-        <label>
-          Card #
-          <input type="text" name="card_number" placeholder="1" required />
-        </label>
       </div>
       <div class="grid">
         <label>
           Variation <small>(optional)</small>
           <input type="text" name="variation" placeholder="Rookie, PSA 9, etc." />
+        </label>
+        <label>
+          Card # <small>(optional)</small>
+          <input type="text" name="card_number" placeholder="311" />
         </label>
         <label>
           Notes <small>(optional)</small>
@@ -48,31 +48,31 @@
   </details>
 </section>
 
-<section>
-  <div class="grid" style="align-items: center; margin-bottom: 1rem;">
-    <h2 style="margin: 0;">Collection</h2>
+<section id="collection-section">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+    <h2 style="margin: 0; font-size: 1rem; font-weight: 600; color: #1e3a5f;">Collection</h2>
     <input
       type="search"
-      placeholder="Search cards..."
+      placeholder="Search..."
       hx-get="/cards/search"
       hx-trigger="input changed delay:300ms, search"
       hx-target="#card-body"
       hx-swap="innerHTML"
       name="q"
-      style="max-width: 300px; justify-self: end;"
+      style="max-width: 220px; margin: 0;"
     />
   </div>
 
-  <figure>
+  <figure style="margin: 0;">
     <table>
       <thead>
         <tr>
-          <th>Player</th>
           <th>Year</th>
+          <th>Player</th>
           <th>Brand</th>
           <th>Set</th>
-          <th>Card #</th>
           <th>Variation</th>
+          <th>Card #</th>
           <th>Est. Value</th>
           <th></th>
         </tr>
