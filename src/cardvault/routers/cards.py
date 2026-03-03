@@ -21,18 +21,18 @@ def index(request: Request, session: Session = Depends(get_session)) -> HTMLResp
 @router.post("/cards", response_class=HTMLResponse)
 def create_card(
     request: Request,
-    player_name: str = Form(...),
     year: int = Form(...),
+    player_name: str = Form(...),
     brand: str = Form(...),
     set: str = Form(...),
-    card_number: str = Form(...),
+    card_number: str = Form(""),
     variation: str = Form(""),
     notes: str = Form(""),
     session: Session = Depends(get_session),
 ) -> HTMLResponse:
     card = Card(
-        player_name=player_name,
         year=year,
+        player_name=player_name,
         brand=brand,
         set=set,
         card_number=card_number,
@@ -66,6 +66,7 @@ def search_cards(
         query = query.where(
             Card.player_name.ilike(term)  # type: ignore[union-attr]
             | Card.brand.ilike(term)  # type: ignore[union-attr]
+            | Card.set.ilike(term)  # type: ignore[union-attr]
             | Card.card_number.ilike(term)  # type: ignore[union-attr]
         )
     cards = session.exec(query).all()

@@ -58,7 +58,15 @@ def test_card_defaults(session: Session) -> None:
 
 def test_multiple_cards(session: Session) -> None:
     session.add(make_card(player_name="Ken Griffey Jr."))
-    session.add(make_card(player_name="Mike Trout", year=2011, brand="Topps", card_number="175"))
+    session.add(
+        make_card(
+            player_name="Mike Trout",
+            year=2011,
+            brand="Topps",
+            set="Update Series",
+            card_number="175",
+        )
+    )
     session.commit()
 
     results = session.exec(select(Card)).all()
@@ -78,6 +86,11 @@ def test_search_query_without_variation(session: Session) -> None:
 def test_search_query_with_variation(session: Session) -> None:
     card = make_card(variation="Rookie")
     assert card.search_query == "1989 Upper Deck Base Set Ken Griffey Jr. 1 Rookie"
+
+
+def test_search_query_without_card_number(session: Session) -> None:
+    card = make_card(card_number="")
+    assert card.search_query == "1989 Upper Deck Base Set Ken Griffey Jr."
 
 
 # ---------------------------------------------------------------------------

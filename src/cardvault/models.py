@@ -13,7 +13,7 @@ class Card(SQLModel, table=True):
     year: int
     brand: str
     set: str
-    card_number: str
+    card_number: str = ""
     variation: str = ""
     notes: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -35,7 +35,9 @@ class Card(SQLModel, table=True):
     @property
     def search_query(self) -> str:
         """eBay search string for this card."""
-        parts = [str(self.year), self.brand, self.set, self.player_name, self.card_number]
+        parts = [str(self.year), self.brand, self.set, self.player_name]
+        if self.card_number:
+            parts.append(self.card_number)
         if self.variation:
             parts.append(self.variation)
         return " ".join(parts)
