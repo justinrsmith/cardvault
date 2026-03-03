@@ -6,6 +6,7 @@ GRIFFEY = {
     "player_name": "Ken Griffey Jr.",
     "year": "1989",
     "brand": "Upper Deck",
+    "set": "Base Set",
     "card_number": "1",
     "variation": "Rookie",
 }
@@ -14,6 +15,7 @@ TROUT = {
     "player_name": "Mike Trout",
     "year": "2011",
     "brand": "Topps",
+    "set": "Update Series",
     "card_number": "175",
     "variation": "",
 }

@@ -12,6 +12,7 @@ def make_card(**kwargs: object) -> Card:
         "player_name": "Ken Griffey Jr.",
         "year": 1989,
         "brand": "Upper Deck",
+        "set": "Base Set",
         "card_number": "1",
         "variation": "",
     }
@@ -71,12 +72,12 @@ def test_multiple_cards(session: Session) -> None:
 
 def test_search_query_without_variation(session: Session) -> None:
     card = make_card(variation="")
-    assert card.search_query == "1989 Upper Deck Ken Griffey Jr. 1"
+    assert card.search_query == "1989 Upper Deck Base Set Ken Griffey Jr. 1"
 
 
 def test_search_query_with_variation(session: Session) -> None:
     card = make_card(variation="Rookie")
-    assert card.search_query == "1989 Upper Deck Ken Griffey Jr. 1 Rookie"
+    assert card.search_query == "1989 Upper Deck Base Set Ken Griffey Jr. 1 Rookie"
 
 
 # ---------------------------------------------------------------------------
