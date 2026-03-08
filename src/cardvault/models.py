@@ -22,15 +22,10 @@ class Card(SQLModel, table=True):
 
     @property
     def estimated_value(self) -> float | None:
-        """Median of the 5 most recent sale prices."""
+        """Mean of all stored listing prices."""
         if not self.price_records:
             return None
-        recent = sorted(self.price_records, key=lambda r: r.sold_at, reverse=True)[:5]
-        prices = sorted(r.sale_price for r in recent)
-        mid = len(prices) // 2
-        if len(prices) % 2 == 0:
-            return (prices[mid - 1] + prices[mid]) / 2
-        return prices[mid]
+        return sum(r.sale_price for r in self.price_records) / len(self.price_records)
 
     @property
     def search_query(self) -> str:

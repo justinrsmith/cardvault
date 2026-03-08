@@ -5,13 +5,7 @@
   <td>{{ card.set }}</td>
   <td>{{ card.variation or "—" }}</td>
   <td>{{ card.card_number or "—" }}</td>
-  <td>
-    {% if card.estimated_value is not none %}
-      <span class="estimated-value">${{ "%.2f"|format(card.estimated_value) }}</span>
-    {% else %}
-      <span style="color: var(--pico-color-zinc-400);">—</span>
-    {% endif %}
-  </td>
+  {% include "partials/price_history.html" %}
   <td>
     <button
       class="outline secondary"

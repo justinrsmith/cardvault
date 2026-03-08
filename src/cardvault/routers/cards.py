@@ -5,8 +5,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
 
+from cardvault.config import settings
 from cardvault.database import get_session
-from cardvault.models import Card
+from cardvault.models import Card, PriceRecord
+from cardvault.services.ebay_scraper import scrape_sold_listings
 
 router = APIRouter()
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
@@ -19,7 +21,7 @@ def index(request: Request, session: Session = Depends(get_session)) -> HTMLResp
 
 
 @router.post("/cards", response_class=HTMLResponse)
-def create_card(
+async def create_card(
     request: Request,
     year: int = Form(...),
     player_name: str = Form(...),
@@ -42,6 +44,19 @@ def create_card(
     session.add(card)
     session.commit()
     session.refresh(card)
+
+    try:
+        results = await scrape_sold_listings(
+            card.search_query,
+            settings.ebay_results_count,
+        )
+        for r in results:
+            session.add(PriceRecord(card_id=card.id, **r))
+        session.commit()
+        session.refresh(card)
+    except Exception:
+        pass  # render the row with whatever data we have
+
     return templates.TemplateResponse(request, "partials/card_row.html", {"card": card})
 
 
