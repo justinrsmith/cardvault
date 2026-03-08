@@ -6,7 +6,14 @@
   <td>{{ card.variation or "—" }}</td>
   <td>{{ card.card_number or "—" }}</td>
   {% include "partials/price_history.html" %}
-  <td>
+  <td style="white-space: nowrap;">
+    <button
+      class="outline"
+      style="padding: 0.2rem 0.6rem; margin: 0 0.25rem 0 0; font-size: 0.8rem;"
+      hx-get="/cards/{{ card.id }}/edit"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+    >Edit</button>
     <button
       class="outline secondary"
       style="padding: 0.2rem 0.6rem; margin: 0; font-size: 0.8rem;"

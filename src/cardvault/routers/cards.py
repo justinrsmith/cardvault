@@ -60,15 +60,6 @@ async def create_card(
     return templates.TemplateResponse(request, "partials/card_row.html", {"card": card})
 
 
-@router.delete("/cards/{card_id}", response_class=HTMLResponse)
-def delete_card(card_id: int, session: Session = Depends(get_session)) -> HTMLResponse:
-    card = session.get(Card, card_id)
-    if card:
-        session.delete(card)
-        session.commit()
-    return HTMLResponse("")
-
-
 @router.get("/cards/search", response_class=HTMLResponse)
 def search_cards(
     request: Request,
@@ -86,3 +77,65 @@ def search_cards(
         )
     cards = session.exec(query).all()
     return templates.TemplateResponse(request, "partials/card_list.html", {"cards": cards})
+
+
+@router.get("/cards/{card_id}", response_class=HTMLResponse)
+def get_card(
+    card_id: int,
+    request: Request,
+    session: Session = Depends(get_session),
+) -> HTMLResponse:
+    card = session.get(Card, card_id)
+    if card is None:
+        return HTMLResponse("", status_code=404)
+    return templates.TemplateResponse(request, "partials/card_row.html", {"card": card})
+
+
+@router.get("/cards/{card_id}/edit", response_class=HTMLResponse)
+def edit_card_form(
+    card_id: int,
+    request: Request,
+    session: Session = Depends(get_session),
+) -> HTMLResponse:
+    card = session.get(Card, card_id)
+    if card is None:
+        return HTMLResponse("", status_code=404)
+    return templates.TemplateResponse(request, "partials/card_edit_row.html", {"card": card})
+
+
+@router.put("/cards/{card_id}", response_class=HTMLResponse)
+def update_card(
+    card_id: int,
+    request: Request,
+    year: int = Form(...),
+    player_name: str = Form(...),
+    brand: str = Form(...),
+    set: str = Form(...),
+    card_number: str = Form(""),
+    variation: str = Form(""),
+    notes: str = Form(""),
+    session: Session = Depends(get_session),
+) -> HTMLResponse:
+    card = session.get(Card, card_id)
+    if card is None:
+        return HTMLResponse("", status_code=404)
+    card.year = year
+    card.player_name = player_name
+    card.brand = brand
+    card.set = set
+    card.card_number = card_number
+    card.variation = variation
+    card.notes = notes
+    session.add(card)
+    session.commit()
+    session.refresh(card)
+    return templates.TemplateResponse(request, "partials/card_row.html", {"card": card})
+
+
+@router.delete("/cards/{card_id}", response_class=HTMLResponse)
+def delete_card(card_id: int, session: Session = Depends(get_session)) -> HTMLResponse:
+    card = session.get(Card, card_id)
+    if card:
+        session.delete(card)
+        session.commit()
+    return HTMLResponse("")

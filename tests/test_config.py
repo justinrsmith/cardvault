@@ -5,12 +5,9 @@ import pytest
 from cardvault.config import Settings
 
 
-def test_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("EBAY_APP_ID", raising=False)
-    monkeypatch.delenv("EBAY_CLIENT_SECRET", raising=False)
-    monkeypatch.delenv("DATABASE_URL", raising=False)
-    monkeypatch.delenv("EBAY_RESULTS_COUNT", raising=False)
-    s = Settings(_env_file=None)  # type: ignore[call-arg]
+def test_defaults(monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory) -> None:
+    monkeypatch.chdir(tmp_path)
+    s = Settings()
     assert s.database_url == "sqlite:///./cardvault.db"
     assert s.ebay_app_id == ""
     assert s.ebay_client_secret == ""
