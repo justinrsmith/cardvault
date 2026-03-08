@@ -1,0 +1,27 @@
+<tr id="card-{{ card.id }}">
+  <td><input type="number" name="year" value="{{ card.year }}" min="1800" max="2100" required style="width: 5rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td><input type="text" name="player_name" value="{{ card.player_name }}" required style="min-width: 8rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td><input type="text" name="brand" value="{{ card.brand }}" required style="min-width: 5rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td><input type="text" name="set" value="{{ card.set }}" required style="min-width: 6rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td><input type="text" name="variation" value="{{ card.variation }}" style="min-width: 5rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td><input type="text" name="card_number" value="{{ card.card_number }}" style="width: 4rem; padding: 0.2rem 0.4rem; margin: 0;" /></td>
+  <td>—</td>
+  <td style="white-space: nowrap;">
+    <button
+      type="button"
+      style="width: auto; padding: 0.2rem 0.6rem; margin: 0 0.25rem 0 0; font-size: 0.8rem;"
+      hx-put="/cards/{{ card.id }}"
+      hx-include="closest tr"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+    >Save</button>
+    <button
+      type="button"
+      class="outline secondary"
+      style="width: auto; padding: 0.2rem 0.6rem; margin: 0; font-size: 0.8rem;"
+      hx-get="/cards/{{ card.id }}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+    >Cancel</button>
+  </td>
+</tr>

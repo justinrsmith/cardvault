@@ -5,7 +5,8 @@ import pytest
 from cardvault.config import Settings
 
 
-def test_defaults() -> None:
+def test_defaults(monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory) -> None:
+    monkeypatch.chdir(tmp_path)
     s = Settings()
     assert s.database_url == "sqlite:///./cardvault.db"
     assert s.ebay_results_count == 10

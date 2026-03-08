@@ -12,7 +12,14 @@
       <span style="color: var(--pico-color-zinc-400);">—</span>
     {% endif %}
   </td>
-  <td>
+  <td style="white-space: nowrap;">
+    <button
+      class="outline"
+      style="padding: 0.2rem 0.6rem; margin: 0 0.25rem 0 0; font-size: 0.8rem;"
+      hx-get="/cards/{{ card.id }}/edit"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+    >Edit</button>
     <button
       class="outline secondary"
       style="padding: 0.2rem 0.6rem; margin: 0; font-size: 0.8rem;"

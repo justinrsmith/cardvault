@@ -153,3 +153,86 @@ def test_search_no_results(client: TestClient) -> None:
     post_card(client, GRIFFEY)
     resp = client.get("/cards/search?q=nobody")
     assert "No cards yet" in resp.text
+
+
+# ---------------------------------------------------------------------------
+# GET /cards/{id}
+# ---------------------------------------------------------------------------
+
+
+def _get_card_id(client: TestClient) -> str:
+    index = client.get("/")
+    import re
+
+    match = re.search(r'hx-delete="/cards/(\d+)"', index.text)
+    assert match, "Could not find card id in page"
+    return match.group(1)
+
+
+def test_get_card_returns_row(client: TestClient) -> None:
+    post_card(client, GRIFFEY)
+    card_id = _get_card_id(client)
+    resp = client.get(f"/cards/{card_id}")
+    assert resp.status_code == 200
+    assert "Ken Griffey Jr." in resp.text
+
+
+def test_get_card_nonexistent(client: TestClient) -> None:
+    resp = client.get("/cards/99999")
+    assert resp.status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# GET /cards/{id}/edit
+# ---------------------------------------------------------------------------
+
+
+def test_edit_form_returns_prefilled_inputs(client: TestClient) -> None:
+    post_card(client, GRIFFEY)
+    card_id = _get_card_id(client)
+    resp = client.get(f"/cards/{card_id}/edit")
+    assert resp.status_code == 200
+    assert 'value="Ken Griffey Jr."' in resp.text
+    assert 'value="1989"' in resp.text
+    assert 'value="Upper Deck"' in resp.text
+
+
+def test_edit_form_nonexistent(client: TestClient) -> None:
+    resp = client.get("/cards/99999/edit")
+    assert resp.status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# PUT /cards/{id}
+# ---------------------------------------------------------------------------
+
+
+def test_update_card_returns_updated_row(client: TestClient) -> None:
+    post_card(client, GRIFFEY)
+    card_id = _get_card_id(client)
+    updated = {**GRIFFEY, "player_name": "Ken Griffey Sr.", "year": "1990"}
+    resp = client.put(f"/cards/{card_id}", data=updated)
+    assert resp.status_code == 200
+    assert "Ken Griffey Sr." in resp.text
+    assert "1990" in resp.text
+
+
+def test_update_card_persists(client: TestClient) -> None:
+    post_card(client, GRIFFEY)
+    card_id = _get_card_id(client)
+    client.put(f"/cards/{card_id}", data={**GRIFFEY, "player_name": "Updated Name"})
+    resp = client.get("/")
+    assert "Updated Name" in resp.text
+    assert "Ken Griffey Jr." not in resp.text
+
+
+def test_update_card_missing_required_field(client: TestClient) -> None:
+    post_card(client, GRIFFEY)
+    card_id = _get_card_id(client)
+    resp = client.put(f"/cards/{card_id}", data={"player_name": "Oops"})
+    assert resp.status_code == 422
+
+
+def test_update_nonexistent_card(client: TestClient) -> None:
+    resp = client.put("/cards/99999", data=GRIFFEY)
+    assert resp.status_code == 404
