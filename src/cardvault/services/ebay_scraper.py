@@ -53,7 +53,7 @@ async def scrape_sold_listings(
             _BROWSE_URL,
             headers={"Authorization": f"Bearer {token}"},
             params={
-                "q": query,
+                "q": f"{query} -PSA -BGS -SGC -CGC -graded",
                 "limit": str(count),
                 "sort": "newlyListed",
             },
@@ -70,7 +70,7 @@ async def scrape_sold_listings(
             listed_at = datetime.fromisoformat(item["itemCreationDate"].replace("Z", "+00:00"))
             source_url: str = item.get("itemWebUrl", "")
             results.append({"sale_price": price, "sold_at": listed_at, "source_url": source_url})
-        except KeyError, ValueError:
+        except (KeyError, ValueError):
             continue
 
     return results
