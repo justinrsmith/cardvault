@@ -1,7 +1,6 @@
 <td id="price-cell-{{ card.id }}" style="white-space: nowrap;">
   {% if card.estimated_value is not none %}
     <span class="estimated-value">${{ "%.2f"|format(card.estimated_value) }}</span>
-    <small style="color: #888; margin-left: 0.2rem;">{{ card.price_records|length }} sales</small>
   {% else %}
     <span style="color: var(--pico-color-zinc-400);">—</span>
   {% endif %}

@@ -8,7 +8,7 @@ from sqlmodel import Session
 from cardvault.config import settings
 from cardvault.database import get_session
 from cardvault.models import Card, PriceRecord
-from cardvault.services.ebay_scraper import scrape_sold_listings
+from cardvault.services.ebay_scraper import fetch_active_listings
 
 router = APIRouter()
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
@@ -25,12 +25,12 @@ async def refresh_card_prices(
         return HTMLResponse(status_code=404)
 
     try:
-        results = await scrape_sold_listings(
+        results = await fetch_active_listings(
             card.search_query,
             settings.ebay_results_count,
         )
         # Replace existing records with a fresh market snapshot
-        for record in card.price_records:
+        for record in card.listing_records:
             session.delete(record)
         session.flush()
         for r in results:

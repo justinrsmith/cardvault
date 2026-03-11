@@ -20,18 +20,18 @@ GRIFFEY = {
 
 MOCK_RESULTS = [
     {
-        "sale_price": 125.0,
-        "sold_at": datetime(2024, 11, 15, tzinfo=UTC),
+        "list_price": 125.0,
+        "listed_at": datetime(2024, 11, 15, tzinfo=UTC),
         "source_url": "https://www.ebay.com/itm/1",
     },
     {
-        "sale_price": 150.0,
-        "sold_at": datetime(2024, 10, 1, tzinfo=UTC),
+        "list_price": 150.0,
+        "listed_at": datetime(2024, 10, 1, tzinfo=UTC),
         "source_url": "https://www.ebay.com/itm/2",
     },
     {
-        "sale_price": 100.0,
-        "sold_at": datetime(2024, 9, 5, tzinfo=UTC),
+        "list_price": 100.0,
+        "listed_at": datetime(2024, 9, 5, tzinfo=UTC),
         "source_url": "https://www.ebay.com/itm/3",
     },
 ]
@@ -67,18 +67,6 @@ def test_refresh_creates_price_records(
     # mean of [100, 125, 150] = 125.00
     assert "$125.00" in resp.text
 
-
-def test_refresh_shows_sale_count(
-    client: TestClient,
-    mock_scraper: tuple[AsyncMock, AsyncMock],
-) -> None:
-    _, prices_mock = mock_scraper
-    prices_mock.return_value = MOCK_RESULTS
-
-    card_id = _create_card(client)
-    resp = client.post(f"/cards/{card_id}/refresh")
-
-    assert "3 sales" in resp.text
 
 
 def test_refresh_nonexistent_card(client: TestClient) -> None:

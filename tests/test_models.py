@@ -23,8 +23,8 @@ def make_card(**kwargs: object) -> Card:
 def make_price(card_id: int, price: float, days_ago: int = 0) -> PriceRecord:
     return PriceRecord(
         card_id=card_id,
-        sale_price=price,
-        sold_at=datetime.now(UTC) - timedelta(days=days_ago),
+        list_price=price,
+        listed_at=datetime.now(UTC) - timedelta(days=days_ago),
     )
 
 
@@ -154,7 +154,7 @@ def test_price_record_persists(session: Session) -> None:
     session.refresh(record)
 
     assert record.id is not None
-    assert record.sale_price == 125.50
+    assert record.list_price == 125.50
     assert record.card_id == card.id
 
 
@@ -169,4 +169,4 @@ def test_price_record_relationship(session: Session) -> None:
     session.commit()
     session.refresh(card)
 
-    assert len(card.price_records) == 2
+    assert len(card.listing_records) == 2

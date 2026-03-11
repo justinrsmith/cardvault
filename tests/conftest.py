@@ -19,11 +19,11 @@ def mock_scraper() -> Generator[tuple[AsyncMock, AsyncMock]]:
     """
     with (
         patch(
-            "cardvault.routers.cards.scrape_sold_listings",
+            "cardvault.routers.cards.fetch_active_listings",
             new_callable=AsyncMock,
         ) as cards_mock,
         patch(
-            "cardvault.routers.prices.scrape_sold_listings",
+            "cardvault.routers.prices.fetch_active_listings",
             new_callable=AsyncMock,
         ) as prices_mock,
     ):

@@ -18,14 +18,14 @@ class Card(SQLModel, table=True):
     notes: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-    price_records: list[PriceRecord] = Relationship(back_populates="card")
+    listing_records: list[PriceRecord] = Relationship(back_populates="card")
 
     @property
     def estimated_value(self) -> float | None:
         """Mean of all stored listing prices."""
-        if not self.price_records:
+        if not self.listing_records:
             return None
-        return sum(r.sale_price for r in self.price_records) / len(self.price_records)
+        return sum(r.list_price for r in self.listing_records) / len(self.listing_records)
 
     @property
     def search_query(self) -> str:
@@ -41,9 +41,9 @@ class Card(SQLModel, table=True):
 class PriceRecord(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     card_id: int = Field(foreign_key="card.id", index=True)
-    sale_price: float
-    sold_at: datetime
+    list_price: float
+    listed_at: datetime
     source_url: str = ""
     fetched_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-    card: Card | None = Relationship(back_populates="price_records")
+    card: Card | None = Relationship(back_populates="listing_records")

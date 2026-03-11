@@ -34,13 +34,13 @@ async def _get_access_token() -> str:
         return str(response.json()["access_token"])
 
 
-async def scrape_sold_listings(
+async def fetch_active_listings(
     query: str,
     count: int,
 ) -> list[dict[str, Any]]:
     """Fetch current eBay listings via the Browse API and return up to *count* results.
 
-    Returns a list of dicts with keys: sale_price (float), sold_at (datetime),
+    Returns a list of dicts with keys: list_price (float), listed_at (datetime),
     source_url (str). Returns [] if credentials are not configured.
     """
     if not settings.ebay_app_id or not settings.ebay_client_secret:
@@ -69,7 +69,7 @@ async def scrape_sold_listings(
             price = float(item["price"]["value"])
             listed_at = datetime.fromisoformat(item["itemCreationDate"].replace("Z", "+00:00"))
             source_url: str = item.get("itemWebUrl", "")
-            results.append({"sale_price": price, "sold_at": listed_at, "source_url": source_url})
+            results.append({"list_price": price, "listed_at": listed_at, "source_url": source_url})
         except (KeyError, ValueError):
             continue
 

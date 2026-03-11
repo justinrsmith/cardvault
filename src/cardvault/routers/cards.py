@@ -8,7 +8,7 @@ from sqlmodel import Session, select
 from cardvault.config import settings
 from cardvault.database import get_session
 from cardvault.models import Card, PriceRecord
-from cardvault.services.ebay_scraper import scrape_sold_listings
+from cardvault.services.ebay_scraper import fetch_active_listings
 
 router = APIRouter()
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
@@ -46,7 +46,7 @@ async def create_card(
     session.refresh(card)
 
     try:
-        results = await scrape_sold_listings(
+        results = await fetch_active_listings(
             card.search_query,
             settings.ebay_results_count,
         )
