@@ -1,0 +1,22 @@
+<td id="price-cell-{{ card.id }}" style="white-space: nowrap;">
+  {% if card.estimated_value is not none %}
+    <span class="estimated-value">${{ "%.2f"|format(card.estimated_value) }}</span>
+  {% else %}
+    <span style="color: var(--pico-color-zinc-400);">—</span>
+  {% endif %}
+  <button
+    class="outline secondary"
+    style="padding: 0.1rem 0.35rem; margin: 0 0 0 0.3rem; font-size: 0.75rem; line-height: 1;"
+    hx-post="/cards/{{ card.id }}/refresh"
+    hx-target="#price-cell-{{ card.id }}"
+    hx-swap="outerHTML"
+    hx-indicator="#refresh-spinner-{{ card.id }}"
+    title="Refresh price"
+  >↻</button>
+  <span
+    id="refresh-spinner-{{ card.id }}"
+    class="htmx-indicator"
+    style="font-size: 0.75rem; color: #888;"
+    aria-busy="true"
+  >…</span>
+</td>

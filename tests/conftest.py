@@ -1,4 +1,5 @@
 from collections.abc import Generator
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -7,6 +8,28 @@ from sqlmodel.pool import StaticPool
 
 from cardvault.database import get_session
 from cardvault.main import app
+
+
+@pytest.fixture(autouse=True)
+def mock_scraper() -> Generator[tuple[AsyncMock, AsyncMock]]:
+    """Block real eBay network calls in every test.
+
+    Yields (cards_mock, prices_mock) so individual tests can reconfigure
+    return_value or side_effect as needed.
+    """
+    with (
+        patch(
+            "cardvault.routers.cards.fetch_active_listings",
+            new_callable=AsyncMock,
+        ) as cards_mock,
+        patch(
+            "cardvault.routers.prices.fetch_active_listings",
+            new_callable=AsyncMock,
+        ) as prices_mock,
+    ):
+        cards_mock.return_value = []
+        prices_mock.return_value = []
+        yield cards_mock, prices_mock
 
 
 @pytest.fixture(name="engine")

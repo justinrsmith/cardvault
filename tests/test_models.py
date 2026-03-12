@@ -23,8 +23,8 @@ def make_card(**kwargs: object) -> Card:
 def make_price(card_id: int, price: float, days_ago: int = 0) -> PriceRecord:
     return PriceRecord(
         card_id=card_id,
-        sale_price=price,
-        sold_at=datetime.now(UTC) - timedelta(days=days_ago),
+        list_price=price,
+        listed_at=datetime.now(UTC) - timedelta(days=days_ago),
     )
 
 
@@ -107,8 +107,8 @@ def test_estimated_value_no_records(session: Session) -> None:
     assert card.estimated_value is None
 
 
-def test_estimated_value_odd_count(session: Session) -> None:
-    """Median of [10, 20, 30] is 20."""
+def test_estimated_value_mean(session: Session) -> None:
+    """Mean of [10, 20, 30] is 20."""
     card = make_card()
     session.add(card)
     session.commit()
@@ -122,8 +122,8 @@ def test_estimated_value_odd_count(session: Session) -> None:
     assert card.estimated_value == 20.0
 
 
-def test_estimated_value_even_count(session: Session) -> None:
-    """Median of [10, 20, 30, 40] is 25."""
+def test_estimated_value_includes_all_records(session: Session) -> None:
+    """Mean includes all records — [10, 20, 30, 40] = 25."""
     card = make_card()
     session.add(card)
     session.commit()
@@ -135,26 +135,6 @@ def test_estimated_value_even_count(session: Session) -> None:
     session.refresh(card)
 
     assert card.estimated_value == 25.0
-
-
-def test_estimated_value_uses_only_5_most_recent(session: Session) -> None:
-    """6 records: 5 recent ones at $10-$50, one old outlier at $1000.
-    The $1000 record should be excluded so median stays reasonable."""
-    card = make_card()
-    session.add(card)
-    session.commit()
-    session.refresh(card)
-
-    # Old outlier
-    session.add(make_price(card.id, 1000.0, days_ago=30))  # type: ignore[arg-type]
-    # 5 recent prices
-    for i, price in enumerate([10.0, 20.0, 30.0, 40.0, 50.0], start=1):
-        session.add(make_price(card.id, price, days_ago=i))  # type: ignore[arg-type]
-    session.commit()
-    session.refresh(card)
-
-    # Median of [10, 20, 30, 40, 50] = 30
-    assert card.estimated_value == 30.0
 
 
 # ---------------------------------------------------------------------------
@@ -174,7 +154,7 @@ def test_price_record_persists(session: Session) -> None:
     session.refresh(record)
 
     assert record.id is not None
-    assert record.sale_price == 125.50
+    assert record.list_price == 125.50
     assert record.card_id == card.id
 
 
@@ -189,4 +169,4 @@ def test_price_record_relationship(session: Session) -> None:
     session.commit()
     session.refresh(card)
 
-    assert len(card.price_records) == 2
+    assert len(card.listing_records) == 2

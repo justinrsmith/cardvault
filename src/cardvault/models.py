@@ -18,19 +18,14 @@ class Card(SQLModel, table=True):
     notes: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-    price_records: list[PriceRecord] = Relationship(back_populates="card")
+    listing_records: list[PriceRecord] = Relationship(back_populates="card")
 
     @property
     def estimated_value(self) -> float | None:
-        """Median of the 5 most recent sale prices."""
-        if not self.price_records:
+        """Mean of all stored listing prices."""
+        if not self.listing_records:
             return None
-        recent = sorted(self.price_records, key=lambda r: r.sold_at, reverse=True)[:5]
-        prices = sorted(r.sale_price for r in recent)
-        mid = len(prices) // 2
-        if len(prices) % 2 == 0:
-            return (prices[mid - 1] + prices[mid]) / 2
-        return prices[mid]
+        return sum(r.list_price for r in self.listing_records) / len(self.listing_records)
 
     @property
     def search_query(self) -> str:
@@ -46,9 +41,9 @@ class Card(SQLModel, table=True):
 class PriceRecord(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     card_id: int = Field(foreign_key="card.id", index=True)
-    sale_price: float
-    sold_at: datetime
+    list_price: float
+    listed_at: datetime
     source_url: str = ""
     fetched_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-    card: Card | None = Relationship(back_populates="price_records")
+    card: Card | None = Relationship(back_populates="listing_records")
